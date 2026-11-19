@@ -7,123 +7,218 @@ interface IsometricSeatDiagramProps {
   compact?: boolean;
 }
 
-interface IsoZone {
+interface CurvedIsoBlock {
   id: string;
   tierId: string;
-  label: string;
-  topPoints: string;
-  sideLeftPoints?: string;
-  sideRightPoints?: string;
-  labelX: number;
-  labelY: number;
+  topPath: string;
+  sidePath: string;
+  topColor: string;
+  sideColor: string;
 }
 
-// Isometric theatre zones projected from an elevated 30-degree perspective
-// Stage is at the front-bottom-left; tiers rise toward the upper-right.
-const ISO_ZONES: IsoZone[] = [
-  // Stalls (Ground sloping plane)
+// Replicates the SISTIC Sands Theatre STALLS (GROUND LEVEL) isometric seat map reference:
+// Curved grey 3D horseshoe base, Doors 1–8 perimeter arrows, STAGE at bottom-right,
+// and colour-coded 3D extruded seating blocks (Peach, Blue, Green, Purple, Yellow, Cyan).
+const ISO_BLOCKS: CurvedIsoBlock[] = [
+  // --- REAR CYAN BLOCKS (C Reserve / Grand Circle) ---
   {
-    id: 'premium',
-    tierId: 'premium',
-    label: 'Premium',
-    topPoints: '126,184 188,150 226,172 164,206',
-    sideLeftPoints: '126,184 164,206 164,212 126,190',
-    sideRightPoints: '164,206 226,172 226,178 164,212',
-    labelX: 176,
-    labelY: 180,
-  },
-  {
-    id: 'vip',
-    tierId: 'vip',
-    label: 'VIP',
-    topPoints: '166,162 224,130 264,152 206,184',
-    sideLeftPoints: '166,162 206,184 206,190 166,168',
-    sideRightPoints: '206,184 264,152 264,158 206,190',
-    labelX: 214,
-    labelY: 160,
-  },
-  {
-    id: 'a-reserve',
-    tierId: 'a-reserve',
-    label: 'A Res',
-    topPoints: '208,138 262,108 304,132 250,162',
-    sideLeftPoints: '208,138 250,162 250,168 208,144',
-    sideRightPoints: '250,162 304,132 304,138 250,168',
-    labelX: 256,
-    labelY: 137,
-  },
-  {
-    id: 'b-reserve',
-    tierId: 'b-reserve',
-    label: 'B Res',
-    topPoints: '252,114 300,88 342,112 294,138',
-    sideLeftPoints: '252,114 294,138 294,144 252,120',
-    sideRightPoints: '294,138 342,112 342,118 294,144',
-    labelX: 297,
-    labelY: 115,
-  },
-  // Dress Circle (Elevated middle balcony tier)
-  {
-    id: 'dress-circle',
-    tierId: 'dress-circle',
-    label: 'Dress Circle',
-    topPoints: '198,84 274,42 332,75 256,117',
-    sideLeftPoints: '198,84 256,117 256,127 198,94',
-    sideRightPoints: '256,117 332,75 332,85 256,127',
-    labelX: 264,
-    labelY: 81,
-  },
-  {
-    id: 'dress-box-left',
-    tierId: 'dress-box',
-    label: 'Box',
-    topPoints: '164,102 192,87 212,98 184,113',
-    sideLeftPoints: '164,102 184,113 184,121 164,110',
-    sideRightPoints: '184,113 212,98 212,106 184,121',
-    labelX: 188,
-    labelY: 102,
-  },
-  {
-    id: 'dress-box-right',
-    tierId: 'dress-box',
-    label: 'Box',
-    topPoints: '316,84 344,69 364,80 336,95',
-    sideLeftPoints: '316,84 336,95 336,103 316,92',
-    sideRightPoints: '336,95 364,80 364,88 336,103',
-    labelX: 340,
-    labelY: 84,
-  },
-  // Grand Circle (Highest upper balcony tier)
-  {
-    id: 'c-reserve',
+    id: 'rear-cyan-left',
     tierId: 'c-reserve',
-    label: 'C Res',
-    topPoints: '234,36 294,3 342,30 282,63',
-    sideLeftPoints: '234,36 282,63 282,72 234,45',
-    sideRightPoints: '282,63 342,30 342,39 282,72',
-    labelX: 288,
-    labelY: 35,
+    topColor: '#A5DEE6',
+    sideColor: '#7CBCC6',
+    topPath: 'M 252 105 Q 256 76 300 66 L 312 88 Q 278 98 274 122 Z',
+    sidePath: 'M 252 105 L 274 122 L 274 137 L 252 120 Z',
   },
   {
-    id: 'grand-circle',
+    id: 'rear-cyan-centre',
     tierId: 'grand-circle',
-    label: 'Grand Circle',
-    topPoints: '284,64 344,31 384,54 324,87',
-    sideLeftPoints: '284,64 324,87 324,96 284,73',
-    sideRightPoints: '324,87 384,54 384,63 324,96',
-    labelX: 334,
-    labelY: 60,
+    topColor: '#A5DEE6',
+    sideColor: '#7CBCC6',
+    topPath: 'M 306 64 Q 348 52 388 53 L 395 73 Q 355 74 318 85 Z',
+    sidePath: 'M 306 64 L 318 85 L 318 98 L 306 78 Z',
   },
   {
-    id: 'grand-box',
+    id: 'rear-cyan-right',
     tierId: 'grand-box',
-    label: 'G.Box',
-    topPoints: '202,52 228,38 246,48 220,62',
-    sideLeftPoints: '202,52 220,62 220,70 202,60',
-    sideRightPoints: '220,62 246,48 246,56 220,70',
-    labelX: 224,
-    labelY: 52,
+    topColor: '#A5DEE6',
+    sideColor: '#7CBCC6',
+    topPath: 'M 393 53 Q 425 54 452 67 L 456 87 Q 428 75 400 73 Z',
+    sidePath: 'M 393 53 L 400 73 L 400 86 L 393 67 Z',
   },
+
+  // --- CREAM YELLOW BLOCKS (B Reserve) ---
+  {
+    id: 'yellow-rear-centre-top',
+    tierId: 'b-reserve',
+    topColor: '#E5DC94',
+    sideColor: '#C5BC72',
+    topPath: 'M 320 88 Q 362 76 402 76 L 409 94 Q 368 95 330 107 Z',
+    sidePath: 'M 320 88 L 330 107 L 330 120 L 320 101 Z',
+  },
+  {
+    id: 'yellow-rear-centre-mid',
+    tierId: 'b-reserve',
+    topColor: '#E5DC94',
+    sideColor: '#C5BC72',
+    topPath: 'M 332 109 Q 372 97 411 97 L 417 115 Q 378 115 342 127 Z',
+    sidePath: 'M 332 109 L 342 127 L 342 140 L 332 122 Z',
+  },
+  {
+    id: 'yellow-right-outer',
+    tierId: 'b-reserve',
+    topColor: '#E5DC94',
+    sideColor: '#C5BC72',
+    topPath: 'M 417 85 Q 454 90 486 116 L 472 132 Q 445 112 422 106 Z',
+    sidePath: 'M 472 132 L 486 116 L 486 129 L 472 144 Z',
+  },
+  {
+    id: 'yellow-left-upper',
+    tierId: 'b-reserve',
+    topColor: '#E5DC94',
+    sideColor: '#C5BC72',
+    topPath: 'M 277 132 L 330 112 L 348 135 L 334 141 L 347 156 L 315 170 Z',
+    sidePath: 'M 277 132 L 315 170 L 315 184 L 277 147 Z',
+  },
+  {
+    id: 'yellow-left-lower',
+    tierId: 'b-reserve',
+    topColor: '#E5DC94',
+    sideColor: '#C5BC72',
+    topPath: 'M 321 174 L 345 164 L 368 188 L 345 198 Z',
+    sidePath: 'M 321 174 L 345 198 L 345 211 L 321 187 Z',
+  },
+  {
+    id: 'yellow-right-corner',
+    tierId: 'b-reserve',
+    topColor: '#E5DC94',
+    sideColor: '#C5BC72',
+    topPath: 'M 472 136 L 496 132 L 512 152 L 488 158 Z',
+    sidePath: 'M 488 158 L 512 152 L 512 162 L 488 168 Z',
+  },
+
+  // --- ORCHID PURPLE CENTRE BLOCK (Dress Circle / Feature Box) ---
+  {
+    id: 'purple-centre',
+    tierId: 'dress-circle',
+    topColor: '#CB88DF',
+    sideColor: '#A664BA',
+    topPath: 'M 347 131 Q 386 119 422 118 L 430 142 Q 394 143 359 154 Z',
+    sidePath: 'M 347 131 L 359 154 L 359 170 L 347 148 Z M 359 154 Q 394 143 430 142 L 430 157 Q 394 158 359 170 Z',
+  },
+
+  // --- SAGE GREEN FLANK BLOCKS (A Reserve) ---
+  {
+    id: 'green-left-inner-pocket',
+    tierId: 'a-reserve',
+    topColor: '#6EAE6B',
+    sideColor: '#528D4F',
+    topPath: 'M 336 142 L 353 136 L 365 150 L 348 156 Z',
+    sidePath: 'M 336 142 L 348 156 L 348 166 L 336 152 Z',
+  },
+  {
+    id: 'green-right-inner-pocket',
+    tierId: 'dress-box',
+    topColor: '#6EAE6B',
+    sideColor: '#528D4F',
+    topPath: 'M 426 112 L 456 108 L 470 124 L 440 128 Z',
+    sidePath: 'M 440 128 L 470 124 L 470 135 L 440 139 Z',
+  },
+  {
+    id: 'green-left-flank',
+    tierId: 'a-reserve',
+    topColor: '#6EAE6B',
+    sideColor: '#528D4F',
+    topPath: 'M 346 164 L 375 154 L 407 188 L 378 201 Z',
+    sidePath: 'M 346 164 L 378 201 L 378 214 L 346 177 Z',
+  },
+  {
+    id: 'green-right-flank',
+    tierId: 'a-reserve',
+    topColor: '#6EAE6B',
+    sideColor: '#528D4F',
+    topPath: 'M 443 142 L 478 134 L 520 172 L 486 183 Z',
+    sidePath: 'M 486 183 L 520 172 L 520 183 L 486 194 Z',
+  },
+
+  // --- PERIWINKLE BLUE CENTRE BLOCK (VIP) ---
+  {
+    id: 'blue-centre-vip',
+    tierId: 'vip',
+    topColor: '#9BB8EB',
+    sideColor: '#7997CD',
+    topPath: 'M 374 164 Q 410 153 442 153 L 471 186 Q 438 187 404 198 Z',
+    sidePath: 'M 374 164 L 404 198 L 404 209 L 374 176 Z',
+  },
+
+  // --- WARM PEACH FRONT BLOCKS (Premium) ---
+  {
+    id: 'peach-centre-main',
+    tierId: 'premium',
+    topColor: '#EEBA7B',
+    sideColor: '#CF9A5B',
+    topPath: 'M 405 199 Q 440 188 472 187 L 491 210 Q 456 212 423 224 Z',
+    sidePath: 'M 405 199 L 423 224 L 423 234 L 405 210 Z',
+  },
+  {
+    id: 'peach-centre-front-row',
+    tierId: 'premium',
+    topColor: '#EEBA7B',
+    sideColor: '#CF9A5B',
+    topPath: 'M 426 226 Q 460 214 494 213 L 506 227 Q 470 229 437 241 Z',
+    sidePath: 'M 426 226 L 437 241 L 437 251 L 426 236 Z M 437 241 Q 470 229 506 227 L 506 237 Q 470 239 437 251 Z',
+  },
+  {
+    id: 'peach-left-wing-1',
+    tierId: 'premium',
+    topColor: '#EEBA7B',
+    sideColor: '#CF9A5B',
+    topPath: 'M 377 202 L 403 192 L 414 205 L 388 216 Z',
+    sidePath: 'M 377 202 L 388 216 L 388 226 L 377 212 Z',
+  },
+  {
+    id: 'peach-left-wing-2',
+    tierId: 'premium',
+    topColor: '#EEBA7B',
+    sideColor: '#CF9A5B',
+    topPath: 'M 387 218 L 409 209 L 422 224 L 401 234 Z',
+    sidePath: 'M 387 218 L 401 234 L 401 243 L 387 227 Z',
+  },
+  {
+    id: 'peach-left-front-box',
+    tierId: 'premium',
+    topColor: '#EEBA7B',
+    sideColor: '#CF9A5B',
+    topPath: 'M 410 234 L 426 228 L 435 239 L 419 246 Z',
+    sidePath: 'M 410 234 L 419 246 L 419 254 L 410 242 Z',
+  },
+  {
+    id: 'peach-right-wing',
+    tierId: 'premium',
+    topColor: '#EEBA7B',
+    sideColor: '#CF9A5B',
+    topPath: 'M 483 184 L 519 174 L 535 190 L 499 201 Z',
+    sidePath: 'M 499 201 L 535 190 L 535 200 L 499 211 Z',
+  },
+  {
+    id: 'peach-right-front-box',
+    tierId: 'premium',
+    topColor: '#EEBA7B',
+    sideColor: '#CF9A5B',
+    topPath: 'M 499 203 L 528 195 L 538 207 L 510 216 Z',
+    sidePath: 'M 510 216 L 538 207 L 538 216 L 510 225 Z',
+  },
+];
+
+// Curved perimeter entry arrows (Doors 1–8) matching the reference diagram
+const DOOR_ARROWS = [
+  { label: 'DOOR 1', x: 562, y: 175, arrowPath: 'M 548 182 Q 536 184 528 190', headPoints: '528,190 536,184 534,193' },
+  { label: 'DOOR 2', x: 518, y: 76, arrowPath: 'M 505 84 Q 496 92 492 102', headPoints: '492,102 492,93 500,97' },
+  { label: 'DOOR 3', x: 464, y: 34, arrowPath: 'M 454 41 Q 447 49 444 59', headPoints: '444,59 443,50 451,54' },
+  { label: 'DOOR 4', x: 356, y: 18, arrowPath: 'M 352 24 Q 348 33 348 42', headPoints: '348,42 343,34 353,34' },
+  { label: 'DOOR 5', x: 256, y: 36, arrowPath: 'M 262 43 Q 270 50 274 59', headPoints: '274,59 266,54 275,50' },
+  { label: 'DOOR 6', x: 204, y: 112, arrowPath: 'M 224 112 Q 236 112 246 116', headPoints: '246,116 238,119 240,110' },
+  { label: 'DOOR 7', x: 230, y: 174, arrowPath: 'M 250 166 Q 262 162 273 163', headPoints: '273,163 265,168 266,158' },
+  { label: 'DOOR 8', x: 328, y: 266, arrowPath: 'M 342 252 Q 348 242 347 232', headPoints: '347,232 342,240 352,240' },
 ];
 
 export const IsometricSeatDiagram: React.FC<IsometricSeatDiagramProps> = ({
@@ -137,130 +232,149 @@ export const IsometricSeatDiagram: React.FC<IsometricSeatDiagramProps> = ({
   const previewTier = PRICE_TIERS.find((t) => t.id === previewTierId) ?? PRICE_TIERS[0];
 
   return (
-    <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2">
+    <div className="bg-white border border-slate-200 rounded-lg p-3 space-y-2">
       <div className="flex items-center justify-between gap-2 text-[11px]">
         <span className="font-semibold text-slate-700">
-          Isometric Seat Map (Click zone)
+          Sands Theatre Isometric Seat Map
         </span>
         <span className="inline-flex items-center gap-1.5 font-semibold text-slate-900 tabular-nums">
           <span
-            className="w-2.5 h-2.5 rounded-sm shrink-0"
+            className="w-2.5 h-2.5 rounded-sm shrink-0 border border-slate-300"
             style={{ backgroundColor: previewTier.colorHex }}
             aria-hidden="true"
           />
-          <span className="truncate max-w-[135px]">
+          <span className="truncate max-w-[140px]">
             {previewTier.name.split(' (')[0]} · S${previewTier.price}
           </span>
         </span>
       </div>
 
       <svg
-        viewBox="40 0 365 245"
+        viewBox="15 8 565 276"
         role="img"
-        aria-label="Isometric seat map diagram of Sands Theatre showing stage, stalls, dress circle, and grand circle"
-        className={`w-full select-none ${compact ? 'h-36' : 'h-44'}`}
+        aria-label="Sands Theatre isometric stalls and doors seat map diagram"
+        className={`w-full select-none ${compact ? 'h-40' : 'h-48'}`}
       >
-        {/* Subtle Auditorium Floor Shadow */}
-        <polygon
-          points="56,194 286,66 392,126 162,240"
-          fill="#E2E8F0"
-          opacity="0.55"
-        />
+        {/* Left Title matching reference layout */}
+        <text
+          x="74"
+          y="148"
+          textAnchor="middle"
+          fill="#262930"
+          fontSize="15"
+          fontWeight="600"
+          letterSpacing="0.5"
+        >
+          STALLS
+        </text>
+        <text
+          x="74"
+          y="165"
+          textAnchor="middle"
+          fill="#475569"
+          fontSize="10.5"
+          fontWeight="500"
+        >
+          (GROUND LEVEL)
+        </text>
 
-        {/* Isometric Stage & Orchestra Pit */}
+        {/* Grey 3D Curved Horseshoe Auditorium Slab */}
         <g>
-          <polygon
-            points="58,186 124,149 178,180 112,217"
-            fill="#16181F"
-            stroke="#334155"
+          {/* Extruded outer grey depth edge */}
+          <path
+            d="M 229 102 C 228 175 280 230 398 273 L 552 214 L 552 224 L 398 282 C 276 238 228 184 229 114 Z"
+            fill="#9CA3AF"
+          />
+          {/* Top grey floor slab */}
+          <path
+            d="M 230 98 C 232 45 368 25 462 60 C 520 82 544 134 552 214 L 398 273 C 280 230 228 172 230 98 Z"
+            fill="#E5E7EB"
+            stroke="#D1D5DB"
             strokeWidth="1"
           />
-          <polygon
-            points="58,186 112,217 112,226 58,195"
-            fill="#0F172A"
-          />
-          <polygon
-            points="112,217 178,180 178,189 112,226"
-            fill="#1E293B"
-          />
-          <text
-            x="118"
-            y="186"
-            textAnchor="middle"
-            fill="#F8FAFC"
-            fontSize="9.5"
-            fontWeight="700"
-            letterSpacing="0.8"
-          >
-            STAGE
-          </text>
         </g>
 
-        {/* Isometric Seating Zones */}
-        {ISO_ZONES.map((zone) => {
-          const tier = PRICE_TIERS.find((t) => t.id === zone.tierId);
-          if (!tier) return null;
+        {/* Doors 1–8 Curved Perimeter Arrows */}
+        {DOOR_ARROWS.map((door) => (
+          <g key={door.label}>
+            <text
+              x={door.x}
+              y={door.y}
+              textAnchor="middle"
+              fill="#374151"
+              fontSize="9.5"
+              fontWeight="600"
+            >
+              {door.label}
+            </text>
+            <path
+              d={door.arrowPath}
+              fill="none"
+              stroke="#6B7280"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+            <polygon points={door.headPoints} fill="#6B7280" />
+          </g>
+        ))}
 
-          const isSelected = selectedTierId === zone.tierId;
-          const isHovered = hoveredTierId === zone.tierId;
-          const active = isSelected || isHovered;
+        {/* Interactive 3D Isometric Seating Blocks */}
+        {ISO_BLOCKS.map((block) => {
+          const tier = PRICE_TIERS.find((t) => t.id === block.tierId);
+          if (!tier) return null;
+          const isSelected = selectedTierId === block.tierId;
+          const isHovered = hoveredTierId === block.tierId;
+          const isActive = isSelected || isHovered;
 
           return (
             <g
-              key={zone.id}
+              key={block.id}
               role="button"
               tabIndex={0}
-              aria-label={`Select ${tier.name} at S$${tier.price}`}
-              onClick={() => onSelectTier(zone.tierId)}
-              onMouseEnter={() => setHoveredTierId(zone.tierId)}
+              aria-label={`Select ${tier.name} (S$${tier.price})`}
+              onClick={() => onSelectTier(block.tierId)}
+              onMouseEnter={() => setHoveredTierId(block.tierId)}
               onMouseLeave={() => setHoveredTierId(null)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  onSelectTier(zone.tierId);
+                  onSelectTier(block.tierId);
                 }
               }}
               className="cursor-pointer focus:outline-none"
               style={{
-                transform: active ? 'translateY(-3px)' : 'translateY(0px)',
+                transform: isActive ? 'translateY(-3px)' : 'translateY(0px)',
                 transition: 'transform 150ms cubic-bezier(0.16, 1, 0.3, 1)',
               }}
             >
-              {zone.sideLeftPoints && (
-                <polygon
-                  points={zone.sideLeftPoints}
-                  fill={tier.colorHex}
-                  fillOpacity={active ? 0.85 : 0.65}
-                />
-              )}
-              {zone.sideRightPoints && (
-                <polygon
-                  points={zone.sideRightPoints}
-                  fill="#0F172A"
-                  fillOpacity={active ? 0.35 : 0.45}
-                />
-              )}
-              <polygon
-                points={zone.topPoints}
-                fill={tier.colorHex}
-                fillOpacity={active ? 1 : 0.82}
-                stroke={isSelected ? '#FFFFFF' : '#F8FAFC'}
-                strokeWidth={isSelected ? '2' : '1'}
+              <path
+                d={block.sidePath}
+                fill={block.sideColor}
+                opacity={isActive ? 1 : 0.85}
               />
-              <text
-                x={zone.labelX}
-                y={zone.labelY}
-                textAnchor="middle"
-                fill="#FFFFFF"
-                fontSize={zone.label.length > 7 ? '7.2' : '8'}
-                fontWeight="700"
-                style={{ pointerEvents: 'none' }}
-              >
-                {zone.label}
-              </text>
+              <path
+                d={block.topPath}
+                fill={block.topColor}
+                opacity={isActive ? 1 : 0.9}
+                stroke={isSelected ? '#16181F' : '#FFFFFF'}
+                strokeWidth={isSelected ? '1.8' : '0.7'}
+              />
             </g>
           );
         })}
+
+        {/* STAGE Label at bottom-right front */}
+        <text
+          x="485"
+          y="269"
+          textAnchor="middle"
+          fill="#262930"
+          fontSize="14.5"
+          fontWeight="600"
+          letterSpacing="0.8"
+        >
+          STAGE
+        </text>
       </svg>
     </div>
   );

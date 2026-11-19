@@ -208,7 +208,7 @@ export const SeatMapModal: React.FC<SeatMapModalProps> = ({
                   >
                     <span className="flex items-center gap-2 min-w-0">
                       <span
-                        className="w-3 h-3 rounded-sm shrink-0"
+                        className="w-3 h-3 rounded-sm shrink-0 border border-slate-300"
                         style={{ backgroundColor: tier.colorHex }}
                         aria-hidden="true"
                       />
@@ -293,12 +293,12 @@ export const SeatMapModal: React.FC<SeatMapModalProps> = ({
                                   disabled={seat.occupied}
                                   onClick={() => toggleSeat(seat)}
                                   title={`${seat.section} · Row ${seat.row} · Seat ${seat.number} (${tier.name} - S$${tier.price})`}
-                                  className={`w-6 h-6 rounded text-[10px] font-semibold tabular-nums flex items-center justify-center transition-transform cursor-pointer ${aisleGap} ${
+                                  className={`w-6 h-6 rounded text-[10px] font-bold tabular-nums flex items-center justify-center transition-transform cursor-pointer ${aisleGap} ${
                                     seat.occupied
                                       ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
                                       : isSelected
                                       ? 'bg-emerald-600 text-white scale-105'
-                                      : 'text-white hover:scale-105'
+                                      : 'text-slate-900 border border-black/15 hover:scale-105'
                                   }`}
                                   style={
                                     !seat.occupied && !isSelected

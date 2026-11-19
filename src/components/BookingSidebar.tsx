@@ -205,11 +205,11 @@ export const BookingSidebar: React.FC<BookingSidebarProps> = ({
               >
                 <span className="flex items-center gap-2 min-w-0">
                   <span
-                    className="w-3 h-3 rounded-sm shrink-0 flex items-center justify-center text-white"
+                    className="w-3 h-3 rounded-sm shrink-0 border border-black/15 flex items-center justify-center text-slate-900"
                     style={{ backgroundColor: tier.colorHex }}
                     aria-hidden="true"
                   >
-                    {isSelected && <Check className="w-2.5 h-2.5" />}
+                    {isSelected && <Check className="w-2.5 h-2.5 stroke-[2.5]" />}
                   </span>
                   <span className="truncate text-slate-900">
                     {tier.name.split(' (')[0]}

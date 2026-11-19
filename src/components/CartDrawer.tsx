@@ -244,11 +244,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           >
                             <span className="flex items-center gap-2 min-w-0">
                               <span
-                                className="w-2.5 h-2.5 rounded-sm shrink-0 flex items-center justify-center text-white"
+                                className="w-2.5 h-2.5 rounded-sm shrink-0 border border-black/15 flex items-center justify-center text-slate-900"
                                 style={{ backgroundColor: tier.colorHex }}
                                 aria-hidden="true"
                               >
-                                {isSelected && <Check className="w-2 h-2" />}
+                                {isSelected && <Check className="w-2 h-2 stroke-[2.5]" />}
                               </span>
                               <span className="truncate text-slate-900">
                                 {tier.name.split(' (')[0]}
