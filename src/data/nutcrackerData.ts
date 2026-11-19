@@ -55,10 +55,51 @@ export interface RelatedEvent {
   image: string;
 }
 
+export interface ShowPurchaseRecord {
+  id: string;
+  title: string;
+  dateLabel: string;
+  quarter: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+  venue: string;
+  tickets: number;
+  orderRef: string;
+}
+
 export const HERO_IMAGE = '/src/assets/images/nutcracker_hero_stage_1795062508254.jpg';
 export const SNOW_IMAGE = '/src/assets/images/nutcracker_snow_scene_1795062508583.jpg';
 export const TREE_IMAGE = '/src/assets/images/nutcracker_christmas_tree_1795062508604.jpg';
 export const THEATRE_IMAGE = '/src/assets/images/sands_theatre_interior_1795062508988.jpg';
+export const OTTER_MASCOT_IMAGE = '/src/assets/images/sistic_otter_mascot_1795063429850.jpg';
+
+export const INITIAL_2026_STREAK_SHOWS: ShowPurchaseRecord[] = [
+  {
+    id: '2026-q1-phantom',
+    title: 'The Phantom of the Opera',
+    dateLabel: '14 Mar 2026',
+    quarter: 'Q1',
+    venue: 'Sands Theatre, Marina Bay Sands',
+    tickets: 2,
+    orderRef: 'SG-2026-184210',
+  },
+  {
+    id: '2026-q2-sso',
+    title: 'Singapore Symphony Orchestra Gala',
+    dateLabel: '20 Jun 2026',
+    quarter: 'Q2',
+    venue: 'Esplanade Concert Hall',
+    tickets: 2,
+    orderRef: 'SG-2026-492031',
+  },
+  {
+    id: '2026-q3-giselle',
+    title: 'Giselle — Classical Ballet',
+    dateLabel: '12 Sep 2026',
+    quarter: 'Q3',
+    venue: 'Sands Theatre, Marina Bay Sands',
+    tickets: 2,
+    orderRef: 'SG-2026-731509',
+  },
+];
 
 export const SHOW_SESSIONS: ShowSession[] = [
   {

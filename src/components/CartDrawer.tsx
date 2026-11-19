@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { CartItem } from '../data/nutcrackerData';
-import { X, Trash2, Minus, Plus, CheckCircle2, Ticket } from 'lucide-react';
+import { CartItem, PRICE_TIERS, SHOW_SESSIONS } from '../data/nutcrackerData';
+import { IsometricSeatDiagram } from './IsometricSeatDiagram';
+import { X, Trash2, Minus, Plus, CheckCircle2, Ticket, Check } from 'lucide-react';
 
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   items: CartItem[];
   onUpdateQty: (id: string, delta: number) => void;
+  onUpdateSession: (id: string, sessionId: string) => void;
+  onUpdateTier: (id: string, tierId: string) => void;
   onRemoveItem: (id: string) => void;
   onClearCart: () => void;
+  onOrderCompleted: (orderRef: string, purchasedItems: CartItem[]) => void;
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -16,8 +20,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onClose,
   items,
   onUpdateQty,
+  onUpdateSession,
+  onUpdateTier,
   onRemoveItem,
   onClearCart,
+  onOrderCompleted,
 }) => {
   const [step, setStep] = useState<'bag' | 'checkout' | 'confirmed'>('bag');
   const [fullName, setFullName] = useState('');
@@ -48,13 +55,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const handleCheckoutSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const ref = `SG-2026-${Math.floor(100000 + Math.random() * 899999)}`;
+    const snapshotItems = [...items];
     setOrderRef(ref);
     setConfirmedSnapshot({
-      items: [...items],
+      items: snapshotItems,
       total: grandTotal,
       buyerName: fullName.trim() || 'Guest Patron',
       buyerEmail: email.trim() || 'patron@example.com',
     });
+    onOrderCompleted(ref, snapshotItems);
     onClearCart();
     setStep('confirmed');
   };
@@ -172,9 +181,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       <h3 className="text-sm font-bold text-slate-900">
                         {item.tierName}
                       </h3>
-                      <p className="text-xs text-slate-600 mt-0.5">
-                        {item.sessionLabel}
-                      </p>
                       <p className="text-[11px] font-mono text-slate-500 mt-1">
                         {item.seats.join(', ')}
                       </p>
@@ -187,6 +193,74 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`cart-session-${item.id}`}
+                      className="block text-[11px] font-semibold text-slate-600 mb-1"
+                    >
+                      Show Date & Time
+                    </label>
+                    <select
+                      id={`cart-session-${item.id}`}
+                      value={item.sessionId}
+                      onChange={(e) => onUpdateSession(item.id, e.target.value)}
+                      className="w-full px-2.5 py-2 text-xs font-medium text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:border-[#E11D38]"
+                    >
+                      {SHOW_SESSIONS.map((session) => (
+                        <option key={session.id} value={session.id}>
+                          {session.dateLabel} · {session.time} ({session.status})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Colour-Coded Seat Category Selection + Isometric Seat Map */}
+                  <div className="space-y-2 pt-1">
+                    <span className="block text-[11px] font-semibold text-slate-600">
+                      Seat Category (Colour-Coded)
+                    </span>
+
+                    <IsometricSeatDiagram
+                      selectedTierId={item.tierId}
+                      onSelectTier={(tierId) => onUpdateTier(item.id, tierId)}
+                      compact
+                    />
+
+                    <div className="grid grid-cols-1 gap-1 max-h-36 overflow-y-auto border border-slate-200 rounded-lg divide-y divide-slate-100">
+                      {PRICE_TIERS.map((tier) => {
+                        const isSelected = tier.id === item.tierId;
+                        return (
+                          <button
+                            key={tier.id}
+                            type="button"
+                            onClick={() => onUpdateTier(item.id, tier.id)}
+                            className={`px-2.5 py-1.5 flex items-center justify-between gap-2 text-left text-[11px] transition-colors cursor-pointer ${
+                              isSelected
+                                ? 'bg-rose-50/70 font-semibold'
+                                : 'bg-white hover:bg-slate-50'
+                            }`}
+                          >
+                            <span className="flex items-center gap-2 min-w-0">
+                              <span
+                                className="w-2.5 h-2.5 rounded-sm shrink-0 flex items-center justify-center text-white"
+                                style={{ backgroundColor: tier.colorHex }}
+                                aria-hidden="true"
+                              >
+                                {isSelected && <Check className="w-2 h-2" />}
+                              </span>
+                              <span className="truncate text-slate-900">
+                                {tier.name.split(' (')[0]}
+                              </span>
+                            </span>
+                            <span className="font-bold text-slate-900 tabular-nums shrink-0">
+                              S${tier.price}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between pt-2 border-t border-slate-100">

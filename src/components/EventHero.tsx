@@ -155,9 +155,9 @@ export const EventHero: React.FC<EventHeroProps> = ({
                 <button
                   type="button"
                   onClick={onBuyTickets}
-                  className="px-6 py-2.5 text-sm font-semibold text-white bg-[#E11D38] hover:bg-[#C4142D] rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer shadow-sm"
+                  className="px-6 py-2.5 text-sm font-bold text-white bg-[#E11D38] hover:bg-[#C4142D] rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer shadow-sm btn-flash-red"
                 >
-                  Buy Tickets
+                  Buy Now with 1-Click
                 </button>
               </div>
             </div>

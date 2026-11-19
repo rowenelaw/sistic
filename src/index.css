@@ -21,3 +21,25 @@
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
+
+@keyframes flash-red-cta {
+  0%, 100% {
+    background-color: #E11D38;
+    box-shadow: 0 0 0 0 rgba(225, 29, 56, 0.7);
+  }
+  50% {
+    background-color: #FF1E3C;
+    box-shadow: 0 0 18px 4px rgba(255, 30, 60, 0.8);
+  }
+}
+
+.btn-flash-red {
+  animation: flash-red-cta 1s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-flash-red {
+    animation: none;
+  }
+}
+

@@ -6,7 +6,8 @@ import {
   ShowSession,
   PriceTier,
 } from '../data/nutcrackerData';
-import { Grid3X3, Minus, Plus, CheckCircle2, AlertCircle } from 'lucide-react';
+import { IsometricSeatDiagram } from './IsometricSeatDiagram';
+import { Grid3X3, Minus, Plus, CheckCircle2, AlertCircle, Check } from 'lucide-react';
 
 interface BookingSidebarProps {
   selectedSessionId: string;
@@ -126,82 +127,104 @@ export const BookingSidebar: React.FC<BookingSidebarProps> = ({
         </span>
       </div>
 
-      {/* Step 1: Date & Showtime */}
-      <div className="space-y-2.5">
+      {/* Step 1: Date & Showtime Dropdown */}
+      <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-semibold text-slate-700">
-            1. Performance Date & Time
+          <label htmlFor="session-select" className="text-xs font-semibold text-slate-700">
+            1. Show Date & Time
           </label>
-          <span className="text-xs text-slate-500">Sands Theatre</span>
+          <span
+            className={`text-xs font-semibold ${
+              selectedSession.status === 'Limited'
+                ? 'text-amber-700'
+                : selectedSession.status === 'Selling Fast'
+                ? 'text-[#E11D38]'
+                : 'text-emerald-700'
+            }`}
+          >
+            {selectedSession.status}
+          </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          {SHOW_SESSIONS.map((session) => {
-            const isSelected = session.id === selectedSession.id;
-            return (
-              <button
-                key={session.id}
-                type="button"
-                onClick={() => onSelectSession(session.id)}
-                className={`text-left p-2.5 rounded-lg border transition-colors cursor-pointer ${
-                  isSelected
-                    ? 'border-[#E11D38] bg-rose-50/50'
-                    : 'border-slate-200 bg-white hover:border-slate-300'
-                }`}
-              >
-                <div className="flex items-baseline justify-between gap-1">
-                  <span className="text-xs font-bold text-slate-900 tabular-nums">
-                    {session.dayShort} {session.dateNum} {session.monthLabel}
-                  </span>
-                  <span className="text-xs font-semibold text-slate-700 tabular-nums">
-                    {session.time}
-                  </span>
-                </div>
-                <div
-                  className={`text-[11px] font-medium mt-1 ${
-                    session.status === 'Limited'
-                      ? 'text-amber-700'
-                      : session.status === 'Selling Fast'
-                      ? 'text-[#E11D38]'
-                      : 'text-emerald-700'
-                  }`}
-                >
-                  {session.status}
-                </div>
-              </button>
-            );
-          })}
-        </div>
+        <select
+          id="session-select"
+          value={selectedSession.id}
+          onChange={(e) => onSelectSession(e.target.value)}
+          className="w-full px-3 py-2.5 text-sm font-medium text-slate-900 bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-[#E11D38]"
+        >
+          {SHOW_SESSIONS.map((session) => (
+            <option key={session.id} value={session.id}>
+              {session.dateLabel} · {session.time} ({session.status})
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* Step 2: Category Selection */}
+      {/* Step 2: Colour-Coded Seat Category Selection + Isometric Seat Map Diagram */}
       <div className="space-y-2.5">
         <div className="flex items-center justify-between">
-          <label htmlFor="tier-select" className="text-xs font-semibold text-slate-700">
-            2. Seating Category
-          </label>
+          <span className="text-xs font-semibold text-slate-700">
+            2. Seat Category (Colour-Coded)
+          </span>
           <button
             type="button"
             onClick={() => onOpenSeatMap(selectedTier.id)}
             className="inline-flex items-center gap-1 text-xs font-semibold text-[#E11D38] hover:underline cursor-pointer"
           >
             <Grid3X3 className="w-3.5 h-3.5" aria-hidden="true" />
-            <span>Choose on Seat Map</span>
+            <span>Exact Seats</span>
           </button>
         </div>
 
-        <select
-          id="tier-select"
-          value={selectedTier.id}
-          onChange={(e) => onSelectTier(e.target.value)}
-          className="w-full px-3 py-2.5 text-sm font-medium text-slate-900 bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-[#E11D38]"
+        {/* Isometric Seat Map Diagram */}
+        <IsometricSeatDiagram
+          selectedTierId={selectedTier.id}
+          onSelectTier={onSelectTier}
+        />
+
+        {/* Colour-Coded Category List */}
+        <div
+          role="radiogroup"
+          aria-label="Seat Category"
+          className="max-h-48 overflow-y-auto border border-slate-200 rounded-lg divide-y divide-slate-100"
         >
-          {PRICE_TIERS.map((tier) => (
-            <option key={tier.id} value={tier.id}>
-              {tier.name} — S${tier.price}
-            </option>
-          ))}
-        </select>
+          {PRICE_TIERS.map((tier) => {
+            const isSelected = tier.id === selectedTier.id;
+            return (
+              <button
+                key={tier.id}
+                type="button"
+                role="radio"
+                aria-checked={isSelected}
+                onClick={() => onSelectTier(tier.id)}
+                className={`w-full px-3 py-2 flex items-center justify-between gap-2 text-left text-xs transition-colors cursor-pointer ${
+                  isSelected
+                    ? 'bg-rose-50/70 font-semibold'
+                    : 'bg-white hover:bg-slate-50'
+                }`}
+              >
+                <span className="flex items-center gap-2 min-w-0">
+                  <span
+                    className="w-3 h-3 rounded-sm shrink-0 flex items-center justify-center text-white"
+                    style={{ backgroundColor: tier.colorHex }}
+                    aria-hidden="true"
+                  >
+                    {isSelected && <Check className="w-2.5 h-2.5" />}
+                  </span>
+                  <span className="truncate text-slate-900">
+                    {tier.name.split(' (')[0]}
+                  </span>
+                  <span className="text-[11px] text-slate-500 shrink-0">
+                    · {tier.section}
+                  </span>
+                </span>
+                <span className="font-bold text-slate-900 tabular-nums shrink-0">
+                  S${tier.price}
+                </span>
+              </button>
+            );
+          })}
+        </div>
 
         {selectedTier.note && (
           <p className="text-xs text-slate-500 leading-relaxed">{selectedTier.note}</p>

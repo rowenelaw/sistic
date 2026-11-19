@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Header } from './components/Header';
 import { EventHero } from './components/EventHero';
+import { YearStreakCard } from './components/YearStreakCard';
 import { EventDetailsTabs, EventTabKey } from './components/EventDetailsTabs';
 import { BookingSidebar } from './components/BookingSidebar';
 import { SeatMapModal } from './components/SeatMapModal';
@@ -11,7 +12,9 @@ import {
   SHOW_SESSIONS,
   PRICE_TIERS,
   PROMO_OFFERS,
+  INITIAL_2026_STREAK_SHOWS,
   CartItem,
+  ShowPurchaseRecord,
 } from './data/nutcrackerData';
 import { CheckCircle2 } from 'lucide-react';
 
@@ -27,6 +30,29 @@ export function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showsBought2026, setShowsBought2026] = useState<ShowPurchaseRecord[]>(() => {
+    try {
+      const saved = localStorage.getItem('sistic_2026_streak_shows');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {
+      // Fallback to initial 2026 shows
+    }
+    return INITIAL_2026_STREAK_SHOWS;
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        'sistic_2026_streak_shows',
+        JSON.stringify(showsBought2026)
+      );
+    } catch {
+      // Ignore storage errors
+    }
+  }, [showsBought2026]);
 
   const triggerToast = (msg: string) => {
     setToastMessage(msg);
@@ -146,6 +172,77 @@ export function App() {
     );
   };
 
+  const handleUpdateCartSession = (id: string, sessionId: string) => {
+    const session =
+      SHOW_SESSIONS.find((s) => s.id === sessionId) ?? SHOW_SESSIONS[0];
+    setSelectedSessionId(session.id);
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              sessionId: session.id,
+              sessionLabel: `${session.dateLabel} · ${session.time}`,
+            }
+          : item
+      )
+    );
+  };
+
+  const handleUpdateCartTier = (id: string, tierId: string) => {
+    const tier = PRICE_TIERS.find((t) => t.id === tierId) ?? PRICE_TIERS[0];
+    setSelectedTierId(tier.id);
+    setCartItems((prev) =>
+      prev.map((item) => {
+        if (item.id !== id) return item;
+        const nextQty = tier.isBox ? 1 : item.quantity;
+        const generatedSeats = Array.from({ length: nextQty }, (_, idx) => {
+          if (tier.isBox) {
+            return `${tier.section} · Box ${idx + 1} (4 Seats)`;
+          }
+          const startSeat = 11 + idx;
+          return `${tier.section} · Row ${
+            tier.id === 'premium' ? 'D' : tier.id === 'vip' ? 'J' : 'L'
+          } · Seat ${startSeat}`;
+        });
+        const discount = computeDiscount(tier.id, tier.price, nextQty);
+        return {
+          ...item,
+          tierId: tier.id,
+          tierName: tier.name,
+          unitPrice: tier.price,
+          bookingFeePerUnit: tier.bookingFee,
+          quantity: nextQty,
+          seats: generatedSeats,
+          promoCode: discount > 0 ? promoCode ?? undefined : undefined,
+          discountAmount: discount,
+        };
+      })
+    );
+  };
+
+  const handleOrderCompleted = (orderRef: string, purchasedItems: CartItem[]) => {
+    const totalTicketsBought = purchasedItems.reduce(
+      (sum, item) => sum + item.quantity,
+      0
+    );
+    const firstSession = purchasedItems[0]?.sessionLabel ?? '26 Nov 2026';
+    const newRecord: ShowPurchaseRecord = {
+      id: `2026-q4-${Date.now()}`,
+      title: 'The Nutcracker — State Ballet of Georgia',
+      dateLabel: firstSession.split(' · ')[0] || '26 Nov 2026',
+      quarter: 'Q4',
+      venue: 'Sands Theatre, Marina Bay Sands',
+      tickets: totalTicketsBought || 1,
+      orderRef,
+    };
+    setShowsBought2026((prev) => {
+      const next = [...prev, newRecord];
+      triggerToast(`2026 Streak updated! ${next.length} shows bought in 2026.`);
+      return next;
+    });
+  };
+
   const totalCartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -158,12 +255,20 @@ export function App() {
 
       <main className="flex-1">
         <EventHero
-          onBuyTickets={scrollToBooking}
+          onBuyTickets={handleAddBestAvailable}
           onOpenSeatMap={() => handleOpenSeatMap()}
         />
 
+        {/* 2026 Year Streak Record & Cute Otter Mascot */}
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-6 lg:pt-8">
+          <YearStreakCard
+            showsBought2026={showsBought2026}
+            onBookToExtend={handleAddBestAvailable}
+          />
+        </div>
+
         {/* Primary 2-Column SISTIC Event Body */}
-        <section className="max-w-[1200px] mx-auto px-4 sm:px-6 py-8 lg:py-10">
+        <section className="max-w-[1200px] mx-auto px-4 sm:px-6 py-6 lg:py-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-8">
               <EventDetailsTabs
@@ -227,10 +332,13 @@ export function App() {
         onClose={() => setCartOpen(false)}
         items={cartItems}
         onUpdateQty={handleUpdateCartQty}
+        onUpdateSession={handleUpdateCartSession}
+        onUpdateTier={handleUpdateCartTier}
         onRemoveItem={(id) =>
           setCartItems((prev) => prev.filter((item) => item.id !== id))
         }
         onClearCart={() => setCartItems([])}
+        onOrderCompleted={handleOrderCompleted}
       />
 
       {/* Subtle Action Toast */}
