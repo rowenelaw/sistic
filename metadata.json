@@ -1,0 +1,6 @@
+{
+  "name": "SISTIC — The Nutcracker by State Ballet of Georgia",
+  "description": "Official SISTIC event ticketing page for The Nutcracker by the State Ballet of Georgia at Sands Theatre, Marina Bay Sands from 26 to 29 November 2026.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
